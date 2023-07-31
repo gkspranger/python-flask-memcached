@@ -8,7 +8,7 @@ MEMCACHED_PORT = os.environ.get("MEMCACHED_PORT", "11211")
 APP_PORT = os.environ.get("APP_PORT", "3000")
 
 APP = Flask(__name__)
-CLIENT = base.Client(('localhost', MEMCACHED_PORT))
+CLIENT = base.Client((MEMCACHED_IP_ADDR, MEMCACHED_PORT))
 
 KEY_ID = "visitors"
 
@@ -49,6 +49,7 @@ def hello():
     return f"Current Value: {val}"
 
 if __name__ == "__main__":
+    print(f"")
     APP.run(
         port=APP_PORT,
         host="0.0.0.0"

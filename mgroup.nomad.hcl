@@ -28,6 +28,11 @@ job "mgroup" {
         name     = "mgroup-app"
         port     = "http"
         provider = "nomad"
+
+        tags = [
+          "apps_level1.enable=true",
+          "apps_level1.http.routers.${NOMAD_JOB_NAME}.rule=Host(`mgroup-app.apps.sandbox.adm.aarp.net`)",
+        ]
       }
 
       artifact {
@@ -41,6 +46,11 @@ job "mgroup" {
         data        = <<-EOH
 #!/usr/bin/env sh
 
+{{ range nomadService "mgroup-memcached" }}
+export MEMCACHED_IP_ADDR='{{ .Address }}'
+export MEMCACHED_PORT='{{ .Port }}'
+{{ end}}
+
 cd local/app
 python -m pip install --upgrade pip
 pip install -r requirements.txt
@@ -50,7 +60,7 @@ python app/
       }
 
       config {
-        image = "public.ecr.aws/docker/library/python:3.11.4"
+        image = "public.ecr.aws/docker/library/python:3.11.4-slim"
         ports = ["http"]
 
         entrypoint = [
