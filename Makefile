@@ -7,6 +7,8 @@ help:
 	@echo "make l				lint code"
 	@echo "make fl				format and lint code"
 	@echo "make x				execute app"
+	@echo "make b				build docker image"
+	@echo "make xc				execute app, via container"
 
 r:
 	@rm -fr venv
@@ -26,3 +28,9 @@ fl: f l
 
 x:
 	@./venv/bin/python app/
+
+b:
+	@docker image build -t gkspranger/flask-memcached-app:latest .
+
+xc:
+	@docker container run --rm -p 3000:3000 -e MEMCACHED_HOST=`hostname` gkspranger/flask-memcached-app
